@@ -1,8 +1,8 @@
-# FairPlay Africa — Content Registration API
+# FairPlay Africa: Content Registration API
 
-A simple, production-minded REST API that lets a user create an account, **register a piece of content**, and **retrieve the content they've registered** — built as the technical task for the FairPlay Africa Fullstack Intern application.
+A simple, production-minded REST API that lets a user create an account, **register a piece of content**, and **retrieve the content they've registered**, built as the technical task for the FairPlay Africa Fullstack Intern application.
 
-The brief was intentionally small ("build a simple API architecture that allows a user to register a piece of content and retrieve their registered content"), so the goal here wasn't to over-build — it was to show how I structure, secure, document and test a real backend service when given a blank slate.
+The brief was intentionally small ("build a simple API architecture that allows a user to register a piece of content and retrieve their registered content"), so the goal here wasn't to over-build. It was to show how I structure, secure, document and test a real backend service when given a blank slate.
 
 ## Tech stack
 
@@ -11,7 +11,7 @@ Chosen to match the stack listed in the FairPlay Africa job description:
 | Concern            | Choice                                                      |
 | ------------------ | ------------------------------------------------------------ |
 | Language           | TypeScript (strict mode)                                    |
-| Runtime / tooling  | [Bun](https://bun.sh) — package manager, dev server, test runner |
+| Runtime / tooling  | [Bun](https://bun.sh): package manager, dev server, test runner |
 | HTTP framework     | Express 4                                                    |
 | Database           | PostgreSQL                                                   |
 | ORM                | Prisma                                                       |
@@ -54,7 +54,7 @@ posts/
 
 **Request flow:** `router -> validate middleware (zod) -> [auth middleware] -> controller -> service (business rules) -> repository (Prisma) -> database`. Controllers stay thin (parse request, call service, shape response); services own the business rules (e.g. "you can only ever see your own content"); repositories are the only files that know about Prisma.
 
-**Error handling:** every thrown `ApiError` (or Prisma known-error, e.g. a unique constraint violation) is caught by a single `errorHandler` and turned into a consistent `{ error: { message, details? } }` JSON shape with the right status code — no scattered try/catch blocks in controllers, since `asyncHandler` forwards rejected promises to it automatically.
+**Error handling:** every thrown `ApiError` (or Prisma known-error, e.g. a unique constraint violation) is caught by a single `errorHandler` and turned into a consistent `{ error: { message, details? } }` JSON shape with the right status code. There are no scattered try/catch blocks in controllers, since `asyncHandler` forwards rejected promises to it automatically.
 
 **Security defaults:** `helmet` for HTTP headers, `cors`, a rate limiter, bcrypt-hashed passwords (never stored or returned in plaintext), JWTs signed with a server-only secret, and content lookups return `404` (not `403`) for another user's content so ownership isn't leaked through the status code.
 
@@ -162,11 +162,11 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for a step-by-step guide to deplo
 
 ## Design decisions & trade-offs
 
-- **Express over Fastify/NestJS** — the most widely known Node framework, so the architecture (not framework-specific idioms) is what gets evaluated. The layered structure would port to either with minimal change.
-- **Prisma over a raw query builder** — type-safe queries, migrations, and a schema that doubles as documentation of the data model, at the cost of an extra generation step (`prisma generate`).
-- **JWT over sessions** — no server-side session store to run/scale for a task this size; a stateless token is the simplest correct choice.
-- **404 instead of 403 on cross-user content access** — a deliberate choice to avoid confirming a resource's existence to a user who doesn't own it.
-- **No delete/update endpoints** — the task asked for register + retrieve; I added list pagination and filtering because "retrieve" implied more than one item, but held the line at scope creep beyond that.
+- **Express over Fastify/NestJS:** the most widely known Node framework, so the architecture (not framework-specific idioms) is what gets evaluated. The layered structure would port to either with minimal change.
+- **Prisma over a raw query builder:** type-safe queries, migrations, and a schema that doubles as documentation of the data model, at the cost of an extra generation step (`prisma generate`).
+- **JWT over sessions:** no server-side session store to run/scale for a task this size; a stateless token is the simplest correct choice.
+- **404 instead of 403 on cross-user content access:** a deliberate choice to avoid confirming a resource's existence to a user who doesn't own it.
+- **No delete/update endpoints:** the task asked for register + retrieve; I added list pagination and filtering because "retrieve" implied more than one item, but held the line at scope creep beyond that.
 
 ---
 
