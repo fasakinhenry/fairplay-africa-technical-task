@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentType {
+  ARTICLE
+  VIDEO
+  IMAGE
+  AUDIO
+  OTHER
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  content      Content[]
+
+  @@map("users")
+}
+
+model Content {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  type        ContentType @default(OTHER)
+  url         String?
+  owner       User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([ownerId])
+  @@map("content")
+}
