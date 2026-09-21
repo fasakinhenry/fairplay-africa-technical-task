@@ -4,9 +4,11 @@ import { prisma } from "./db/prisma.js";
 
 const app = createApp();
 
+const publicUrl = process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${env.PORT}`;
+
 const server = app.listen(env.PORT, () => {
   console.log(`🚀 API listening on port ${env.PORT} (${env.NODE_ENV})`);
-  console.log(`📚 API docs available at http://localhost:${env.PORT}/docs`);
+  console.log(`📚 API docs available at ${publicUrl}/docs`);
 });
 
 async function shutdown(signal: string): Promise<void> {
