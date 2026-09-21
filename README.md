@@ -170,4 +170,4 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for a step-by-step guide to deplo
 
 ---
 
-> Made with 💖 by Fasakin Henry
+> Made with 💖 by [Fasakin Henry](https://github.com/fasakinhenry)
